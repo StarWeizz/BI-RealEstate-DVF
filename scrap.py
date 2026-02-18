@@ -10,26 +10,33 @@ headers = {
     "Accept-Language": "fr-FR,fr;q=0.9",
 }
 
-
 req = requests.get(url, headers=headers)
-
 tree = html.fromstring(req.content)
 
-prix = tree.xpath('/html/body/div[2]/div[5]/div[1]/div[3]/div[1]/div/div[1]/div/div/text()')
+blocs = tree.xpath('//div[contains(@class, "blocAnnonce")]')
 
-badges = tree.xpath('/html/body/div[2]/div[5]/div[1]/div[4]/div[1]/div/div[2]/div')
+print(f"{len(blocs)} annonces trouvées\n")
 
-dpe = tree.xpath('/html/body/div[2]/div[5]/div[1]/div[4]/div[1]/div/div[2]/div/div/button/span/text()')
+for bloc in blocs:
 
-description = tree.xpath('/html/body/div[2]/div[5]/div[1]/div[3]/div[1]/div/div[2]/a/p/text()')
+    h3 = bloc.xpath('.//h3/text()')
 
-agence = tree.xpath('/html/body/div[2]/div[5]/div[1]/div[3]/div[2]/div[1]/div/a/text()')
+    prix = bloc.xpath('.//div[contains(@class,"encoded-lnk")]/text()')
 
-agent = tree.xpath('/html/body/div[2]/div[5]/div[1]/div[3]/div[2]/div[1]/div/p/text()')
+    description = bloc.xpath('.//p/text()')
 
-print(prix)
-print(badges)
-print(dpe)
-print(description)
-print(agence)
-print(agent)
+    agence = bloc.xpath('.//a[contains(@class,"text-sm")]/text()')
+
+    agent = bloc.xpath('.//p[contains(@class,"text-grey-600")]/text()')
+
+    prix_val = prix[0] if prix else None
+    description_val = description[0] if description else None
+    agence_val = agence[0] if agence else None
+    agent_val = agent[0] if agent else None
+
+    print("Prix:", prix_val)
+    print("Description:", description_val)
+    print("Agence:", agence_val)
+    print("Agent:", agent_val)
+    print("-" * 40)
+
